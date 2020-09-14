@@ -2,9 +2,6 @@ require('dotenv').config()
 usePlugin('@nomiclabs/buidler-ethers')
 usePlugin('@nomiclabs/buidler-truffle5')
 
-
-const privateKey = process.env.PRIVATE_KEY
-
 module.exports = {
   networks: {
     localhost: {
@@ -15,7 +12,9 @@ module.exports = {
       url: 'https://mainnet.infura.io/v3/' + process.env.INFURA_API_KEY,
       // gasPrice: 139e9,
       timeout: 1000000,
-      accounts: privateKey ? [privateKey] : undefined,
+      accounts: {
+        mnemonic: process.env.MNEMONIC
+      }
     },
   },
   // This is a sample solc configuration that specifies which version of solc to use
