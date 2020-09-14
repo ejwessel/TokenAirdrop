@@ -24,6 +24,6 @@
     "test:unit": "buidler test test-unit/*",
     "test:integration": "buidler test test-integration/*",
     "lint": "solhint contracts/**/*.sol",
-    "ganache": "ganache-cli"
+    "fork:mainnet": "ganache-cli -f $(node get_infura.js) -m \"$(node get_mnemonic.js)\""
   }
 }

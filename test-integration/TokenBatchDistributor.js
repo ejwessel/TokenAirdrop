@@ -36,18 +36,20 @@ contract("TokenBatchDistributor Unit Test", async (accounts) => {
     })
 
     it("Test distributeTokens distributes to users", async () => {
-      const TokenInterface = new ethers.utils.Interface(IERC20.abi)
-      const transferFrom = TokenInterface.encodeFunctionData('transferFrom', [constants.ZERO_ADDRESS, constants.ZERO_ADDRESS, 0])
-      await mockToken.givenMethodReturnBool(transferFrom, true)
-
+      await FWBToken.approve(distributor.address, 30)
       await distributor.distributeTokens(
         FWBToken.address,
         [randomUser1, randomUser2, randomUser3],
         [10, 10, 10],
         { from: owner }
       )
-      const count = await mockToken.invocationCountForMethod.call(transferFrom)
-      assert(count, 3)
+
+      const user1Bal = await FWBToken.balanceOf(randomUser1)
+      assert.equal(user1Bal.toNumber(), 10)
+      const user2Bal = await FWBToken.balanceOf(randomUser2)
+      assert.equal(user2Bal.toNumber(), 10)
+      const user3Bal = await FWBToken.balanceOf(randomUser3)
+      assert.equal(user3Bal.toNumber(), 10)
     })
   })
 });
