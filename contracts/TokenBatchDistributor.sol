@@ -8,7 +8,8 @@ contract TokenBatchDistributor is Ownable {
         IERC20 token,
         address[] memory users,
         uint256[] memory amounts
-    ) public onlyOwner {
+    ) external onlyOwner {
+        require(users.length == amounts.length, "LENGTH_MISMATCH");
         for (uint256 i = 0; i < users.length; i++) {
             token.transferFrom(msg.sender, users[i], amounts[i]);
         }
