@@ -12,7 +12,6 @@ async function main() {
   const decimals = await FWB.decimals()
 
   const TokenBatchDistributor = await ethers.getContractFactory("TokenBatchDistributor");
-  // const distributor = await TokenBatchDistributor.attach('0x6f699197E5CBB6CE618EC80A5C3B832fb7551BD6');
   const distributor = await TokenBatchDistributor.deploy();
 
   // deploy the distributor
