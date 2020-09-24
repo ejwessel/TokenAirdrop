@@ -11,11 +11,12 @@ contract("TokenBatchDistributor Unit Test", async (accounts) => {
   const [owner, randomUser1, randomUser2, randomUser3] = accounts;
 
   let distributor
-  let FWBToken
+  let FWB
 
   before(async () => {
-    FWBToken = await IERC20.at("0x7d91e637589EC3Bb54D8213a9e92Dc6E8D12da91")
+    FWB = await IERC20.at("0x7d91e637589EC3Bb54D8213a9e92Dc6E8D12da91")
     distributor = await TokenBatchDistributor.new()
+    console.log(distributor.address)
   });
 
   describe("Test Distributions", async () => {
@@ -26,7 +27,7 @@ contract("TokenBatchDistributor Unit Test", async (accounts) => {
     it("Test distributeTokens only callable by owner", async () => {
       await expectRevert(
         distributor.distributeTokens(
-          FWBToken.address,
+          FWB.address,
           [constants.ZERO_ADDRESS],
           [0],
           { from: randomUser1 }
@@ -36,19 +37,25 @@ contract("TokenBatchDistributor Unit Test", async (accounts) => {
     })
 
     it("Test distributeTokens distributes to users", async () => {
-      await FWBToken.approve(distributor.address, 30)
+      await FWB.approve(distributor.address, 30)
       await distributor.distributeTokens(
-        FWBToken.address,
+        FWB.address,
         [randomUser1, randomUser2, randomUser3],
         [10, 10, 10],
         { from: owner }
       )
 
-      const user1Bal = await FWBToken.balanceOf(randomUser1)
+      const ownerBal = await FWB.balanceOf(owner)
+      console.log(ownerBal.toString())
+
+      const user1Bal = await FWB.balanceOf(randomUser1)
+      console.log(user1Bal.toString())
       assert.equal(user1Bal.toNumber(), 10)
-      const user2Bal = await FWBToken.balanceOf(randomUser2)
+      const user2Bal = await FWB.balanceOf(randomUser2)
+      console.log(user2Bal.toString())
       assert.equal(user2Bal.toNumber(), 10)
-      const user3Bal = await FWBToken.balanceOf(randomUser3)
+      const user3Bal = await FWB.balanceOf(randomUser3)
+      console.log(user3Bal.toString())
       assert.equal(user3Bal.toNumber(), 10)
     })
   })
