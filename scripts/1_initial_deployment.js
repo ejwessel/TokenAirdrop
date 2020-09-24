@@ -20,7 +20,6 @@ async function main() {
   console.log(`Distributor Address: ${distributor.address}`)
 
   // approve this contract to move funds (max amount)
-  const totalSupply = await FWB.totalSupply()
   await FWB.approve(distributor.address, constants.MAX_UINT256.toString())
   console.log("Funds Approved")
 }
