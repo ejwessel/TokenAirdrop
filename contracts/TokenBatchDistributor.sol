@@ -3,7 +3,7 @@ pragma solidity ^0.6.10;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-contract TokenBatchDistributor is Ownable {
+contract TokenAirdrop is Ownable {
     function distributeTokens(
         IERC20 token,
         address[] memory users,

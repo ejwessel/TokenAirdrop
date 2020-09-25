@@ -7,9 +7,9 @@ const {
 const timeMachine = require("ganache-time-traveler");
 const MockContract = artifacts.require("MockContract");
 const IERC20 = artifacts.require("IERC20");
-const TokenBatchDistributor = artifacts.require("TokenBatchDistributor");
+const TokenAirdrop = artifacts.require("TokenAirdrop");
 
-contract("TokenBatchDistributor Unit Test", async (accounts) => {
+contract("TokenAirdrop Unit Test", async (accounts) => {
   const [owner, randomUser1, randomUser2, randomUser3] = accounts;
 
   let distributor
@@ -27,7 +27,7 @@ contract("TokenBatchDistributor Unit Test", async (accounts) => {
 
   before(async () => {
     mockToken = await MockContract.new()
-    distributor = await TokenBatchDistributor.new()
+    distributor = await TokenAirdrop.new()
   });
 
   describe("Test Distributions", async () => {

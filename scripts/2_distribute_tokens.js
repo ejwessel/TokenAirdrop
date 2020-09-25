@@ -12,8 +12,8 @@ async function main() {
   const FWB = await ERC20.attach("0x7d91e637589EC3Bb54D8213a9e92Dc6E8D12da91")
   const decimals = await FWB.decimals()
 
-  const TokenBatchDistributor = await ethers.getContractFactory("TokenBatchDistributor");
-  const distributor = await TokenBatchDistributor.attach("0x6f699197E5CBB6CE618EC80A5C3B832fb7551BD6");
+  const TokenAirdrop = await ethers.getContractFactory("TokenAirdrop");
+  const distributor = await TokenAirdrop.attach("0x6f699197E5CBB6CE618EC80A5C3B832fb7551BD6");
 
   const userAmounts = [
     ['0xBA9FEc0023e6AA54D96617cDb3E5507FF20F8B81', amount(decimals, 1)],

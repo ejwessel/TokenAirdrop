@@ -5,9 +5,9 @@ const {
   expectRevert, // Assertions for transactions that should fail
 } = require("@openzeppelin/test-helpers");
 const IERC20 = artifacts.require("IERC20");
-const TokenBatchDistributor = artifacts.require("TokenBatchDistributor");
+const TokenAirdrop = artifacts.require("TokenAirdrop");
 
-contract("TokenBatchDistributor Unit Test", async (accounts) => {
+contract("TokenAirdrop Unit Test", async (accounts) => {
   const [owner, randomUser1, randomUser2, randomUser3] = accounts;
 
   let distributor
@@ -15,7 +15,7 @@ contract("TokenBatchDistributor Unit Test", async (accounts) => {
 
   before(async () => {
     FWB = await IERC20.at("0x7d91e637589EC3Bb54D8213a9e92Dc6E8D12da91")
-    distributor = await TokenBatchDistributor.new()
+    distributor = await TokenAirdrop.new()
     console.log(distributor.address)
   });
 

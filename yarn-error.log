@@ -14,7 +14,7 @@ Platform:
   darwin x64
 
 Trace: 
-  SyntaxError: /Users/ejwessel/Dev/TokenBatchDistributor/package.json: Unexpected token } in JSON at position 404
+  SyntaxError: /Users/ejwessel/Dev/TokenAirdrop/package.json: Unexpected token } in JSON at position 404
       at JSON.parse (<anonymous>)
       at /usr/local/Cellar/yarn/1.22.4/libexec/lib/cli.js:1625:59
       at Generator.next (<anonymous>)
@@ -23,7 +23,7 @@ Trace:
 
 npm manifest: 
   {
-    "name": "TokenBatchDistributor",
+    "name": "TokenAirdrop",
     "version": "1.0.0",
     "main": "index.js",
     "license": "MIT",
