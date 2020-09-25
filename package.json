@@ -27,6 +27,6 @@
     "lint": "solhint contracts/**/*.sol",
     "fork:mainnet": "ganache-cli -f $(node get_infura.js) -m \"$(node get_mnemonic.js)\"",
     "deploy:mainnet": "yarn buidler --network mainnet run ./scripts/1_initial_deployment.js",
-    "distribute": "yarn builder --network mainnet run ./scripts/2_distribute_tokens.js"
+    "airdrop": "yarn builder --network mainnet run ./scripts/2_airdrop_tokens.js"
   }
 }
