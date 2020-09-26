@@ -5,7 +5,6 @@ const {
   expectRevert, // Assertions for transactions that should fail
 } = require("@openzeppelin/test-helpers");
 const { BN } = require("@openzeppelin/test-helpers");
-const IERC20 = artifacts.require("IERC20");
 const ERC20 = artifacts.require("ERC20");
 const TokenAirdrop = artifacts.require("TokenAirdrop");
 
