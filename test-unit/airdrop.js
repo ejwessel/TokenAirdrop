@@ -1,3 +1,4 @@
+require('dotenv').config()
 const { ethers } = require("ethers");
 const Airdrop = artifacts.require("Airdrop");
 const MockContract = artifacts.require("MockContract");
@@ -16,8 +17,8 @@ contract("Airdrop", async (accounts) => {
   });
 
   it("Test Signature Airdrop works", async () => {
-    // deterministic private key from ganache (owner)
-    const privKey = '0x4f3edf983ac636a65a842ce7c78d9aa706d3b113bce9c46f30d7d21715b23b1d'
+    // .env PRIVATE_KEY is set to owner private key
+    const privKey = process.env.PRIVATE_KEY
     const amount = 1000;
     const wallet = new ethers.Wallet(privKey)
     const hash = ethers.utils.solidityKeccak256(['address', 'address', 'uint256'], [mockToken.address, recipient, amount])
