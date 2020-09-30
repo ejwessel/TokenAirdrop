@@ -6,7 +6,7 @@ const {
 } = require("@openzeppelin/test-helpers");
 const { BN } = require("@openzeppelin/test-helpers");
 const ERC20 = artifacts.require("ERC20");
-const TokenAirdrop = artifacts.require("TokenAirdrop");
+const AirdropPush = artifacts.require("AirdropPush");
 
 const DAI_WHALE = '0x131a9A36Ea25aFB4Ed1a4510eE4B36E369d0F699'
 const USDC_WHALE = '0x8cee3eeab46774c1CDe4F6368E3ae68BcCd760Bf'
@@ -31,7 +31,7 @@ async function acquireToken(fundAccount, receiver, token, amount) {
   console.log(`${token.address} Balance: ${tokenBal.toString()}`)
 }
 
-contract("TokenAirdrop Unit Test", async (accounts) => {
+contract("AirdropPush Unit Test", async (accounts) => {
   const [owner, randomUser1, randomUser2, randomUser3] = accounts;
 
   let distributor
@@ -52,7 +52,7 @@ contract("TokenAirdrop Unit Test", async (accounts) => {
     await acquireToken(USDT_WHALE, owner, USDT, "1000")
     await acquireToken(FWB_WHALE, owner, FWB, "1000")
 
-    distributor = await TokenAirdrop.new()
+    distributor = await AirdropPush.new()
     console.log(distributor.address)
   });
 
@@ -61,9 +61,9 @@ contract("TokenAirdrop Unit Test", async (accounts) => {
       assert.equal(await distributor.owner.call(), owner)
     })
 
-    it("Test distributeTokens only callable by owner", async () => {
+    it("Test distirbutes only callable by owner", async () => {
       await expectRevert(
-        distributor.distributeTokens(
+        distributor.distirbutes(
           FWB.address,
           [constants.ZERO_ADDRESS],
           [0],
@@ -73,9 +73,9 @@ contract("TokenAirdrop Unit Test", async (accounts) => {
       )
     })
 
-    it("Test distributeTokens distributes to users", async () => {
+    it("Test distirbutes distributes to users", async () => {
       await FWB.approve(distributor.address, 30)
-      await distributor.distributeTokens(
+      await distributor.distirbutes(
         FWB.address,
         [randomUser1, randomUser2, randomUser3],
         [10, 10, 10],
@@ -96,9 +96,9 @@ contract("TokenAirdrop Unit Test", async (accounts) => {
       assert.equal(user3Bal.toNumber(), 10)
     })
 
-    it("Test distributeTokens distributes to users DAI", async () => {
+    it("Test distirbutes distributes to users DAI", async () => {
       await DAI.approve(distributor.address, 30)
-      await distributor.distributeTokens(
+      await distributor.distirbutes(
         DAI.address,
         [randomUser1, randomUser2, randomUser3],
         [10, 10, 10],
@@ -119,9 +119,9 @@ contract("TokenAirdrop Unit Test", async (accounts) => {
       assert.equal(user3Bal.toNumber(), 10)
     })
 
-    it("Test distributeTokens distributes to users USDC", async () => {
+    it("Test distirbutes distributes to users USDC", async () => {
       await USDC.approve(distributor.address, 30)
-      await distributor.distributeTokens(
+      await distributor.distirbutes(
         USDC.address,
         [randomUser1, randomUser2, randomUser3],
         [10, 10, 10],
@@ -142,9 +142,9 @@ contract("TokenAirdrop Unit Test", async (accounts) => {
       assert.equal(user3Bal.toNumber(), 10)
     })
 
-    it("Test distributeTokens distributes to users USDT", async () => {
+    it("Test distirbutes distributes to users USDT", async () => {
       await USDT.approve(distributor.address, 30)
-      await distributor.distributeTokens(
+      await distributor.distirbutes(
         USDT.address,
         [randomUser1, randomUser2, randomUser3],
         [10, 10, 10],

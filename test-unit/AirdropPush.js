@@ -7,9 +7,9 @@ const {
 const timeMachine = require("ganache-time-traveler");
 const MockContract = artifacts.require("MockContract");
 const IERC20 = artifacts.require("IERC20");
-const TokenAirdrop = artifacts.require("TokenAirdrop");
+const AirdropPush = artifacts.require("AirdropPush");
 
-contract("TokenAirdrop Unit Test", async (accounts) => {
+contract("AirdropPush Unit Test", async (accounts) => {
   const [owner, randomUser1, randomUser2, randomUser3] = accounts;
 
   let distributor
@@ -27,7 +27,7 @@ contract("TokenAirdrop Unit Test", async (accounts) => {
 
   before(async () => {
     mockToken = await MockContract.new()
-    distributor = await TokenAirdrop.new()
+    distributor = await AirdropPush.new()
   });
 
   describe("Test Distributions", async () => {
@@ -35,9 +35,9 @@ contract("TokenAirdrop Unit Test", async (accounts) => {
       assert.equal(await distributor.owner.call(), owner)
     })
 
-    it("Test distributeTokens only callable by owner", async () => {
+    it("Test distirbutes only callable by owner", async () => {
       await expectRevert(
-        distributor.distributeTokens(
+        distributor.distirbute(
           mockToken.address,
           [constants.ZERO_ADDRESS],
           [0],
@@ -47,12 +47,12 @@ contract("TokenAirdrop Unit Test", async (accounts) => {
       )
     })
 
-    it("Test distributeTokens distributes to users", async () => {
+    it("Test distirbutes distribute to users", async () => {
       const TokenInterface = new ethers.utils.Interface(IERC20.abi)
       const transferFrom = TokenInterface.encodeFunctionData('transferFrom', [constants.ZERO_ADDRESS, constants.ZERO_ADDRESS, 0])
       await mockToken.givenMethodReturnBool(transferFrom, true)
 
-      await distributor.distributeTokens(
+      await distributor.distirbute(
         mockToken.address,
         [randomUser1, randomUser2, randomUser3],
         [10, 100, 1000],

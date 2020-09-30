@@ -1,6 +1,6 @@
 require('dotenv').config()
 const { ethers } = require("ethers");
-const Airdrop = artifacts.require("Airdrop");
+const AirdropPull = artifacts.require("Airdrop");
 const MockContract = artifacts.require("MockContract");
 const ERC20 = new ethers.utils.Interface(artifacts.require("ERC20").abi);
 const { BN, expectEvent } = require("@openzeppelin/test-helpers");
@@ -12,11 +12,11 @@ contract("Airdrop", async (accounts) => {
   let mockToken;
 
   beforeEach(async () => {
-    airdrop = await Airdrop.new({ from: owner });
+    AirdropPull = await Airdrop.new({ from: owner });
     mockToken = await MockContract.new();
   });
 
-  it("Test Signature Airdrop works", async () => {
+  it("Test Signature AirdropPullworks", async () => {
     // .env PRIVATE_KEY is set to owner private key
     const privKey = process.env.PRIVATE_KEY
     const amount = 1000;
