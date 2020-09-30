@@ -6,8 +6,17 @@ const MockContract = artifacts.require("MockContract");
 const ERC20 = new ethers.utils.Interface(artifacts.require("ERC20").abi);
 const { BN, expectEvent, expectRevert } = require("@openzeppelin/test-helpers");
 
+async function generateSignature(key, token, amt, recipient) {
+  const wallet = new ethers.Wallet(key)
+  const hash = ethers.utils.solidityKeccak256(['address', 'address', 'uint256'], [token, recipient, amt])
+  const message = ethers.utils.arrayify(hash)
+  const signature = await wallet.signMessage(message)
+  return signature
+}
+
 contract("AirdropPull Unit Test", async (accounts) => {
   const [owner, recipient] = accounts;
+  const amount = "1000"
 
   let distributor;
   let mockToken;
@@ -32,15 +41,7 @@ contract("AirdropPull Unit Test", async (accounts) => {
     })
 
     it("Test user claiming", async () => {
-      // NOTE: .env PRIVATE_KEY is set to owner private key
-
-      // owner of the contract signs the message of which the contract validates
-      const privKey = process.env.PRIVATE_KEY
-      const amount = 1000;
-      const wallet = new ethers.Wallet(privKey)
-      const hash = ethers.utils.solidityKeccak256(['address', 'address', 'uint256'], [mockToken.address, recipient, amount])
-      const message = ethers.utils.arrayify(hash)
-      const signature = await wallet.signMessage(message)
+      const signature = await generateSignature(process.env.PRIVATE_KEY, mockToken.address, amount, recipient)
 
       const transfer = await ERC20.encodeFunctionData('transfer', [recipient, amount])
       await mockToken.givenMethodReturnBool(transfer, true)
@@ -54,13 +55,7 @@ contract("AirdropPull Unit Test", async (accounts) => {
     });
 
     it("Test user claiming with used signature", async () => {
-      // owner of the contract signs the message of which the contract validates
-      const privKey = process.env.PRIVATE_KEY
-      const amount = 1000;
-      const wallet = new ethers.Wallet(privKey)
-      const hash = ethers.utils.solidityKeccak256(['address', 'address', 'uint256'], [mockToken.address, recipient, amount])
-      const message = ethers.utils.arrayify(hash)
-      const signature = await wallet.signMessage(message)
+      const signature = await generateSignature(process.env.PRIVATE_KEY, mockToken.address, amount, recipient)
 
       const transfer = await ERC20.encodeFunctionData('transfer', [recipient, amount])
       await mockToken.givenMethodReturnBool(transfer, true)
@@ -73,13 +68,7 @@ contract("AirdropPull Unit Test", async (accounts) => {
     })
 
     it("Test user claiming with invalid signature", async () => {
-      // owner of the contract signs the message of which the contract validates
-      const privKey = process.env.INVALID_PRIVATE_KEY
-      const amount = 1000;
-      const wallet = new ethers.Wallet(privKey)
-      const hash = ethers.utils.solidityKeccak256(['address', 'address', 'uint256'], [mockToken.address, recipient, amount])
-      const message = ethers.utils.arrayify(hash)
-      const signature = await wallet.signMessage(message)
+      const signature = await generateSignature(process.env.INVALID_PRIVATE_KEY, mockToken.address, amount, recipient)
 
       await expectRevert(distributor.claim(mockToken.address, recipient, amount, signature), "Invalid signature");
     })

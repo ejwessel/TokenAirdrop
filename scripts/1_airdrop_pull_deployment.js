@@ -11,8 +11,8 @@ async function main() {
   const FWB = await ERC20.attach("0x7d91e637589EC3Bb54D8213a9e92Dc6E8D12da91")
   const decimals = await FWB.decimals()
 
-  const AirdropPush = await ethers.getContractFactory("AirdropPush");
-  const distributor = await AirdropPush.deploy();
+  const AirdropPull = await ethers.getContractFactory("AirdropPull");
+  const distributor = await AirdropPull.deploy();
 
   // deploy the distributor
   await distributor.deployed();

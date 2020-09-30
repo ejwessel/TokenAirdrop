@@ -24,7 +24,7 @@
     "clean": "buidler clean",
     "compile": "buidler compile",
     "test:unit": "buidler test test-unit/*  --network localhost",
-    "test:integration": "buidler test test-integration/*",
+    "test:integration": "buidler test test-integration/* --network localhost",
     "lint": "solhint contracts/**/*.sol",
     "fork:mainnet": "ganache-cli -d -f $(node get_infura.js) --unlock 0x131a9A36Ea25aFB4Ed1a4510eE4B36E369d0F699 --unlock 0x8cee3eeab46774c1CDe4F6368E3ae68BcCd760Bf --unlock 0xBE0eB53F46cd790Cd13851d5EFf43D12404d33E8 --unlock 0xBA9FEc0023e6AA54D96617cDb3E5507FF20F8B81",
     "deploy:pull:mainnet": "yarn buidler --network mainnet run ./scripts/1_airdrop_pull_deployment.js",
