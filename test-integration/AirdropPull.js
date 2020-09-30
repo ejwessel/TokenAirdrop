@@ -1,3 +1,4 @@
+require('dotenv').config()
 const { ethers, web3, artifacts, contract } = require("@nomiclabs/buidler");
 const {
   constants,
