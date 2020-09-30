@@ -1,22 +1,22 @@
 require('dotenv').config()
 const { ethers } = require("ethers");
-const AirdropPull = artifacts.require("Airdrop");
+const AirdropPull = artifacts.require("AirdropPull");
 const MockContract = artifacts.require("MockContract");
 const ERC20 = new ethers.utils.Interface(artifacts.require("ERC20").abi);
 const { BN, expectEvent } = require("@openzeppelin/test-helpers");
 
-contract("Airdrop", async (accounts) => {
+contract("AirdropPull Unit Test", async (accounts) => {
   const [owner, recipient] = accounts;
 
-  let airdrop;
+  let distributor;
   let mockToken;
 
   beforeEach(async () => {
-    AirdropPull = await Airdrop.new({ from: owner });
+    distributor = await AirdropPull.new({ from: owner });
     mockToken = await MockContract.new();
   });
 
-  it("Test Signature AirdropPullworks", async () => {
+  it("Test Claiming", async () => {
     // .env PRIVATE_KEY is set to owner private key
     const privKey = process.env.PRIVATE_KEY
     const amount = 1000;
@@ -28,7 +28,7 @@ contract("Airdrop", async (accounts) => {
     const transfer = await ERC20.encodeFunctionData('transfer', [recipient, amount])
     await mockToken.givenMethodReturnBool(transfer, true)
 
-    const trx = await airdrop.claim(mockToken.address, recipient, amount, signature);
+    const trx = await distributor.claim(mockToken.address, recipient, amount, signature);
 
     const invocationCount = await mockToken.invocationCountForMethod.call(transfer)
     assert.equal(invocationCount, 1)
