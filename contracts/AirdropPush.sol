@@ -5,10 +5,10 @@ import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/SafeERC20
 import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/ERC20.sol";
 
-contract TokenAirdrop is Ownable {
+contract AirdropPush is Ownable {
     using SafeERC20 for IERC20;
 
-    function distributeTokens(
+    function distribute(
         IERC20 token,
         address[] memory users,
         uint256[] memory amounts

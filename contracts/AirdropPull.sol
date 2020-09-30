@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import "@openzeppelin/contracts/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract Airdrop is Ownable {
+contract AirdropPull is Ownable {
     using ECDSA for bytes32;
     using SafeERC20 for IERC20;
 
@@ -20,7 +20,7 @@ contract Airdrop is Ownable {
         uint256 amount,
         bytes calldata signature
     ) external {
-        require(!_usedSignatures[signature]);
+        require(!_usedSignatures[signature], "Invalid signature");
         bytes32 h = keccak256(abi.encodePacked(token, recipient, amount));
         address signer = h.toEthSignedMessageHash().recover(signature);
         require(signer == owner(), "Invalid signature");

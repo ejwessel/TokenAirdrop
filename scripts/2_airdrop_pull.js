@@ -12,8 +12,8 @@ async function main() {
   const FWB = await ERC20.attach("0x7d91e637589EC3Bb54D8213a9e92Dc6E8D12da91")
   const decimals = await FWB.decimals()
 
-  const TokenAirdrop = await ethers.getContractFactory("TokenAirdrop");
-  const distributor = await TokenAirdrop.attach("0x6f699197E5CBB6CE618EC80A5C3B832fb7551BD6");
+  const AirdropPush = await ethers.getContractFactory("AirdropPush");
+  const distributor = await AirdropPush.attach("0x6f699197E5CBB6CE618EC80A5C3B832fb7551BD6");
 
   const userAmounts = [
     ['0xBA9FEc0023e6AA54D96617cDb3E5507FF20F8B81', amount(decimals, 1)],
@@ -24,7 +24,7 @@ async function main() {
 
   const users = split[0]
   const amounts = split[1]
-  await distributor.distributeTokens(
+  await distributor.distributes(
     FWB.address,
     users,
     amounts

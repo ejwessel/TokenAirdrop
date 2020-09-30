@@ -6,7 +6,7 @@ const {
 } = require("@openzeppelin/test-helpers");
 const { BN } = require("@openzeppelin/test-helpers");
 const ERC20 = artifacts.require("ERC20");
-const TokenAirdrop = artifacts.require("TokenAirdrop");
+const AirdropPush = artifacts.require("AirdropPush");
 
 const DAI_WHALE = '0x131a9A36Ea25aFB4Ed1a4510eE4B36E369d0F699'
 const USDC_WHALE = '0x8cee3eeab46774c1CDe4F6368E3ae68BcCd760Bf'
@@ -31,7 +31,7 @@ async function acquireToken(fundAccount, receiver, token, amount) {
   console.log(`${token.address} Balance: ${tokenBal.toString()}`)
 }
 
-contract("TokenAirdrop Unit Test", async (accounts) => {
+contract("AirdropPush Integration Test", async (accounts) => {
   const [owner, randomUser1, randomUser2, randomUser3] = accounts;
 
   let distributor
@@ -52,8 +52,7 @@ contract("TokenAirdrop Unit Test", async (accounts) => {
     await acquireToken(USDT_WHALE, owner, USDT, "1000")
     await acquireToken(FWB_WHALE, owner, FWB, "1000")
 
-    distributor = await TokenAirdrop.new()
-    console.log(distributor.address)
+    distributor = await AirdropPush.new()
   });
 
   describe("Test Distributions", async () => {
@@ -61,9 +60,9 @@ contract("TokenAirdrop Unit Test", async (accounts) => {
       assert.equal(await distributor.owner.call(), owner)
     })
 
-    it("Test distributeTokens only callable by owner", async () => {
+    it("Test distribute only callable by owner", async () => {
       await expectRevert(
-        distributor.distributeTokens(
+        distributor.distribute(
           FWB.address,
           [constants.ZERO_ADDRESS],
           [0],
@@ -73,9 +72,9 @@ contract("TokenAirdrop Unit Test", async (accounts) => {
       )
     })
 
-    it("Test distributeTokens distributes to users", async () => {
+    it("Test distribute distribute to users", async () => {
       await FWB.approve(distributor.address, 30)
-      await distributor.distributeTokens(
+      await distributor.distribute(
         FWB.address,
         [randomUser1, randomUser2, randomUser3],
         [10, 10, 10],
@@ -83,22 +82,18 @@ contract("TokenAirdrop Unit Test", async (accounts) => {
       )
 
       const ownerBal = await FWB.balanceOf(owner)
-      console.log(ownerBal.toString())
 
       const user1Bal = await FWB.balanceOf(randomUser1)
-      console.log(user1Bal.toString())
       assert.equal(user1Bal.toNumber(), 10)
       const user2Bal = await FWB.balanceOf(randomUser2)
-      console.log(user2Bal.toString())
       assert.equal(user2Bal.toNumber(), 10)
       const user3Bal = await FWB.balanceOf(randomUser3)
-      console.log(user3Bal.toString())
       assert.equal(user3Bal.toNumber(), 10)
     })
 
-    it("Test distributeTokens distributes to users DAI", async () => {
+    it("Test distribute distribute to users DAI", async () => {
       await DAI.approve(distributor.address, 30)
-      await distributor.distributeTokens(
+      await distributor.distribute(
         DAI.address,
         [randomUser1, randomUser2, randomUser3],
         [10, 10, 10],
@@ -106,22 +101,18 @@ contract("TokenAirdrop Unit Test", async (accounts) => {
       )
 
       const ownerBal = await DAI.balanceOf(owner)
-      console.log(ownerBal.toString())
 
       const user1Bal = await DAI.balanceOf(randomUser1)
-      console.log(user1Bal.toString())
       assert.equal(user1Bal.toNumber(), 10)
       const user2Bal = await DAI.balanceOf(randomUser2)
-      console.log(user2Bal.toString())
       assert.equal(user2Bal.toNumber(), 10)
       const user3Bal = await DAI.balanceOf(randomUser3)
-      console.log(user3Bal.toString())
       assert.equal(user3Bal.toNumber(), 10)
     })
 
-    it("Test distributeTokens distributes to users USDC", async () => {
+    it("Test distribute distribute to users USDC", async () => {
       await USDC.approve(distributor.address, 30)
-      await distributor.distributeTokens(
+      await distributor.distribute(
         USDC.address,
         [randomUser1, randomUser2, randomUser3],
         [10, 10, 10],
@@ -129,22 +120,18 @@ contract("TokenAirdrop Unit Test", async (accounts) => {
       )
 
       const ownerBal = await USDC.balanceOf(owner)
-      console.log(ownerBal.toString())
 
       const user1Bal = await USDC.balanceOf(randomUser1)
-      console.log(user1Bal.toString())
       assert.equal(user1Bal.toNumber(), 10)
       const user2Bal = await USDC.balanceOf(randomUser2)
-      console.log(user2Bal.toString())
       assert.equal(user2Bal.toNumber(), 10)
       const user3Bal = await USDC.balanceOf(randomUser3)
-      console.log(user3Bal.toString())
       assert.equal(user3Bal.toNumber(), 10)
     })
 
-    it("Test distributeTokens distributes to users USDT", async () => {
+    it("Test distribute distribute to users USDT", async () => {
       await USDT.approve(distributor.address, 30)
-      await distributor.distributeTokens(
+      await distributor.distribute(
         USDT.address,
         [randomUser1, randomUser2, randomUser3],
         [10, 10, 10],
@@ -152,16 +139,12 @@ contract("TokenAirdrop Unit Test", async (accounts) => {
       )
 
       const ownerBal = await USDT.balanceOf(owner)
-      console.log(ownerBal.toString())
 
       const user1Bal = await USDT.balanceOf(randomUser1)
-      console.log(user1Bal.toString())
       assert.equal(user1Bal.toNumber(), 10)
       const user2Bal = await USDT.balanceOf(randomUser2)
-      console.log(user2Bal.toString())
       assert.equal(user2Bal.toNumber(), 10)
       const user3Bal = await USDT.balanceOf(randomUser3)
-      console.log(user3Bal.toString())
       assert.equal(user3Bal.toNumber(), 10)
     })
   })
