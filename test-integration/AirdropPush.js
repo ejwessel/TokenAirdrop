@@ -61,9 +61,9 @@ contract("AirdropPush Unit Test", async (accounts) => {
       assert.equal(await distributor.owner.call(), owner)
     })
 
-    it("Test distirbutes only callable by owner", async () => {
+    it("Test distributes only callable by owner", async () => {
       await expectRevert(
-        distributor.distirbutes(
+        distributor.distributes(
           FWB.address,
           [constants.ZERO_ADDRESS],
           [0],
@@ -73,9 +73,9 @@ contract("AirdropPush Unit Test", async (accounts) => {
       )
     })
 
-    it("Test distirbutes distributes to users", async () => {
+    it("Test distributes distributes to users", async () => {
       await FWB.approve(distributor.address, 30)
-      await distributor.distirbutes(
+      await distributor.distributes(
         FWB.address,
         [randomUser1, randomUser2, randomUser3],
         [10, 10, 10],
@@ -96,9 +96,9 @@ contract("AirdropPush Unit Test", async (accounts) => {
       assert.equal(user3Bal.toNumber(), 10)
     })
 
-    it("Test distirbutes distributes to users DAI", async () => {
+    it("Test distributes distributes to users DAI", async () => {
       await DAI.approve(distributor.address, 30)
-      await distributor.distirbutes(
+      await distributor.distributes(
         DAI.address,
         [randomUser1, randomUser2, randomUser3],
         [10, 10, 10],
@@ -119,9 +119,9 @@ contract("AirdropPush Unit Test", async (accounts) => {
       assert.equal(user3Bal.toNumber(), 10)
     })
 
-    it("Test distirbutes distributes to users USDC", async () => {
+    it("Test distributes distributes to users USDC", async () => {
       await USDC.approve(distributor.address, 30)
-      await distributor.distirbutes(
+      await distributor.distributes(
         USDC.address,
         [randomUser1, randomUser2, randomUser3],
         [10, 10, 10],
@@ -142,9 +142,9 @@ contract("AirdropPush Unit Test", async (accounts) => {
       assert.equal(user3Bal.toNumber(), 10)
     })
 
-    it("Test distirbutes distributes to users USDT", async () => {
+    it("Test distributes distributes to users USDT", async () => {
       await USDT.approve(distributor.address, 30)
-      await distributor.distirbutes(
+      await distributor.distributes(
         USDT.address,
         [randomUser1, randomUser2, randomUser3],
         [10, 10, 10],

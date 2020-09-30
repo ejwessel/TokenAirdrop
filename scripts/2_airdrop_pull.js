@@ -24,7 +24,7 @@ async function main() {
 
   const users = split[0]
   const amounts = split[1]
-  await distributor.distirbutes(
+  await distributor.distributes(
     FWB.address,
     users,
     amounts

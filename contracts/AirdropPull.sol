@@ -20,7 +20,7 @@ contract AirdropPull is Ownable {
         uint256 amount,
         bytes calldata signature
     ) external {
-        require(!_usedSignatures[signature]);
+        require(!_usedSignatures[signature], "Invalid signature");
         bytes32 h = keccak256(abi.encodePacked(token, recipient, amount));
         address signer = h.toEthSignedMessageHash().recover(signature);
         require(signer == owner(), "Invalid signature");

@@ -35,9 +35,9 @@ contract("AirdropPush Unit Test", async (accounts) => {
       assert.equal(await distributor.owner.call(), owner)
     })
 
-    it("Test distirbutes only callable by owner", async () => {
+    it("Test distribute only callable by owner", async () => {
       await expectRevert(
-        distributor.distirbute(
+        distributor.distribute(
           mockToken.address,
           [constants.ZERO_ADDRESS],
           [0],
@@ -47,12 +47,12 @@ contract("AirdropPush Unit Test", async (accounts) => {
       )
     })
 
-    it("Test distirbutes distribute to users", async () => {
+    it("Test distribution to users", async () => {
       const TokenInterface = new ethers.utils.Interface(IERC20.abi)
       const transferFrom = TokenInterface.encodeFunctionData('transferFrom', [constants.ZERO_ADDRESS, constants.ZERO_ADDRESS, 0])
       await mockToken.givenMethodReturnBool(transferFrom, true)
 
-      await distributor.distirbute(
+      await distributor.distribute(
         mockToken.address,
         [randomUser1, randomUser2, randomUser3],
         [10, 100, 1000],

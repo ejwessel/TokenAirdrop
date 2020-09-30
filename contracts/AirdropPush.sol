@@ -8,7 +8,7 @@ import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/ERC20.sol
 contract AirdropPush is Ownable {
     using SafeERC20 for IERC20;
 
-    function distirbute(
+    function distribute(
         IERC20 token,
         address[] memory users,
         uint256[] memory amounts
