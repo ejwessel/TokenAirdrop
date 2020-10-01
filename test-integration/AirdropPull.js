@@ -1,3 +1,4 @@
+require('dotenv').config()
 const { ethers, web3, artifacts, contract } = require("@nomiclabs/buidler");
 const {
   constants,
@@ -80,6 +81,7 @@ contract("AirdropPull Integration Test", async (accounts) => {
     user2Sig = await generateSignature(process.env.PRIVATE_KEY, USDC.address, claimAmt, randomUser2)
     user3Sig = await generateSignature(process.env.PRIVATE_KEY, USDT.address, claimAmt, randomUser3)
     user4Sig = await generateSignature(process.env.PRIVATE_KEY, FWB.address, claimAmt, randomUser4)
+
   });
 
   describe("Test Distributions", async () => {
@@ -104,6 +106,35 @@ contract("AirdropPull Integration Test", async (accounts) => {
 
       const user4Bal = await FWB.balanceOf(randomUser4)
       assert(user4Bal, claimAmt)
+    })
+
+    it("Test owner is able to claim remaining amounts", async () => {
+      const daiBal = await DAI.balanceOf(distributor.address)
+      const usdcBal = await USDC.balanceOf(distributor.address)
+      const usdtBal = await USDT.balanceOf(distributor.address)
+      const fwbBal = await FWB.balanceOf(distributor.address)
+
+      const ownerDAISig = await generateSignature(process.env.PRIVATE_KEY, DAI.address, daiBal.toString(), owner)
+      const ownerUSDCSig = await generateSignature(process.env.PRIVATE_KEY, USDC.address, usdcBal.toString(), owner)
+      const ownerUSDTSig = await generateSignature(process.env.PRIVATE_KEY, USDT.address, usdtBal.toString(), owner)
+      const ownerFWBSig = await generateSignature(process.env.PRIVATE_KEY, FWB.address, fwbBal.toString(), owner)
+
+      await distributor.claim(DAI.address, owner, daiBal.toString(), ownerDAISig);
+      await distributor.claim(USDC.address, owner, usdcBal.toString(), ownerUSDCSig);
+      await distributor.claim(USDT.address, owner, usdtBal.toString(), ownerUSDTSig);
+      await distributor.claim(FWB.address, owner, fwbBal.toString(), ownerFWBSig);
+
+      const remDAIBal = await DAI.balanceOf(distributor.address)
+      assert(remDAIBal.toString(), "0")
+
+      const remUSDCBal = await USDC.balanceOf(distributor.address)
+      assert(remUSDCBal.toString(), "0")
+
+      const remUSDTBal = await USDT.balanceOf(distributor.address)
+      assert(remUSDTBal, "0")
+
+      const remFWBBal = await FWB.balanceOf(distributor.address)
+      assert(remFWBBal, "0")
     })
   })
 });
