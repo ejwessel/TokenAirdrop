@@ -74,26 +74,6 @@ contract AirdropPull721 is Ownable {
             );
     }
 
-    function _getChainID() private pure returns (uint256) {
-        uint256 id;
-        // no-inline-assembly
-        assembly {
-            id := chainid()
-        }
-        return id;
-    }
-
-    function _hash(Recipient memory recipient) private view returns (bytes32) {
-        return
-            keccak256(
-                abi.encodePacked(
-                    "\x19\x01",
-                    DOMAIN_SEPARATOR,
-                    _hashRecipient(recipient)
-                )
-            );
-    }
-
     function _hashRecipient(Recipient memory recipient)
         private
         pure
@@ -107,6 +87,26 @@ contract AirdropPull721 is Ownable {
                     recipient.amount
                 )
             );
+    }
+
+    function _hash(Recipient memory recipient) private view returns (bytes32) {
+        return
+            keccak256(
+                abi.encodePacked(
+                    "\x19\x01",
+                    DOMAIN_SEPARATOR,
+                    _hashRecipient(recipient)
+                )
+            );
+    }
+
+    function _getChainID() private pure returns (uint256) {
+        uint256 id;
+        // no-inline-assembly
+        assembly {
+            id := chainid()
+        }
+        return id;
     }
 
     function setSigner(address newSigner) external onlyOwner {
