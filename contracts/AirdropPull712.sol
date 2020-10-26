@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import "@openzeppelin/contracts/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract AirdropPull721 is Ownable {
+contract AirdropPull712 is Ownable {
     using ECDSA for bytes32;
     using SafeERC20 for IERC20;
 

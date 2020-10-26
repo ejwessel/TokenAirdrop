@@ -10,7 +10,7 @@ const { ZERO_ADDRESS } = require("@openzeppelin/test-helpers/src/constants");
 const timeMachine = require("ganache-time-traveler");
 const MockContract = artifacts.require("MockContract");
 const ERC20 = new ethers.utils.Interface(artifacts.require("ERC20").abi);
-const AirdropPull721 = artifacts.require("AirdropPull721");
+const AirdropPull712 = artifacts.require("AirdropPull712");
 const SIGNER = process.env.ACCOUNT_1
 const ROTATED_SIGNER = process.env.ACCOUNT_2
 const DEV_CHAIN_ID = 1
@@ -43,7 +43,7 @@ async function generateSignature(key, contract, recipient, amount, chain = DEV_C
   return { r, s, v }
 }
 
-contract("AirdropPull721 Unit Test", async (accounts) => {
+contract("AirdropPull712 Unit Test", async (accounts) => {
   const [owner, recipient1, recipient2] = accounts;
 
   let rewardDistributor;
@@ -61,16 +61,16 @@ contract("AirdropPull721 Unit Test", async (accounts) => {
 
   before(async () => {
     mockToken = await MockContract.new();
-    rewardDistributor = await AirdropPull721.new(mockToken.address, SIGNER, { from: owner });
+    rewardDistributor = await AirdropPull712.new(mockToken.address, SIGNER, { from: owner });
   });
 
   describe("Test Constructor", async () => {
     it("Test Invalid Token Address", async () => {
-      await expectRevert(AirdropPull721.new(ZERO_ADDRESS, SIGNER, { from: owner }), "Invalid Token")
+      await expectRevert(AirdropPull712.new(ZERO_ADDRESS, SIGNER, { from: owner }), "Invalid Token")
     })
 
     it("Test Invalid Signer Address", async () => {
-      await expectRevert(AirdropPull721.new(mockToken.address, ZERO_ADDRESS, { from: owner }), "Invalid Signer Address")
+      await expectRevert(AirdropPull712.new(mockToken.address, ZERO_ADDRESS, { from: owner }), "Invalid Signer Address")
     })
   })
 
