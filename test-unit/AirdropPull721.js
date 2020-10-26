@@ -13,7 +13,7 @@ const ERC20 = new ethers.utils.Interface(artifacts.require("ERC20").abi);
 const AirdropPull721 = artifacts.require("AirdropPull721");
 const SIGNER = process.env.ACCOUNT_1
 const ROTATED_SIGNER = process.env.ACCOUNT_2
-const DEV_CHAIN_ID = 31337
+const DEV_CHAIN_ID = 1
 
 async function generateSignature(key, contract, recipient, amount, chain = DEV_CHAIN_ID) {
   const domain = {

@@ -74,7 +74,7 @@ contract AirdropPull721 is Ownable {
             );
     }
 
-    function _getChainID() private view returns (uint256) {
+    function _getChainID() private pure returns (uint256) {
         uint256 id;
         // no-inline-assembly
         assembly {
@@ -83,7 +83,7 @@ contract AirdropPull721 is Ownable {
         return id;
     }
 
-    function _hash(Recipient memory recipient) private returns (bytes32) {
+    function _hash(Recipient memory recipient) private view returns (bytes32) {
         return
             keccak256(
                 abi.encodePacked(
@@ -117,7 +117,7 @@ contract AirdropPull721 is Ownable {
         Recipient calldata recipient,
         uint8 v,
         bytes32 r,
-        bytes32 s // bytes calldata signature
+        bytes32 s
     ) external {
         address signatureSigner = ecrecover(_hash(recipient), v, r, s);
         require(signatureSigner == signer, "Invalid Signature");
