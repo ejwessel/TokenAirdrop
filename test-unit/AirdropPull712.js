@@ -104,14 +104,14 @@ contract("AirdropPull712 Unit Test", async (accounts) => {
   })
 
   describe("Test Claiming", async () => {
-    it.only("Test Signature mismatch", async () => {
+    it("Test Signature mismatch", async () => {
       const { r, s, v } = await generateSignature(process.env.ACCOUNT_1_PRIV, rewardDistributor.address, recipient1, 1)
 
       const recipientData = [recipient1, 2]
       await expectRevert(rewardDistributor.claim(recipientData, v, r, s, { from: recipient1 }), "Invalid Signature")
     });
 
-    it.only("Test claiming more than available balance of contract", async () => {
+    it("Test claiming more than available balance of contract", async () => {
       const amount = 10
       const transfer = await ERC20.encodeFunctionData('transfer', [recipient1, amount])
       await mockToken.givenMethodReturnBool(transfer, true)
@@ -124,7 +124,7 @@ contract("AirdropPull712 Unit Test", async (accounts) => {
       await expectRevert(rewardDistributor.claim(recipientData, sig1.v, sig1.r, sig1.s, { from: recipient1 }), "Insufficient Funds")
     });
 
-    it.only("Test claiming for another user", async () => {
+    it("Test claiming for another user", async () => {
       const amount = 10
       const transfer = await ERC20.encodeFunctionData('transfer', [recipient1, amount])
       await mockToken.givenMethodReturnBool(transfer, true)
@@ -139,7 +139,7 @@ contract("AirdropPull712 Unit Test", async (accounts) => {
       await rewardDistributor.claim(recipientData, sig1.v, sig1.r, sig1.s, { from: recipient2 })
     });
 
-    it.only("Test all funds can be removed from contract", async () => {
+    it("Test all funds can be removed from contract", async () => {
       const amount = 10
       const transfer = await ERC20.encodeFunctionData('transfer', [recipient1, amount])
       await mockToken.givenMethodReturnBool(transfer, true)
@@ -152,7 +152,7 @@ contract("AirdropPull712 Unit Test", async (accounts) => {
       await rewardDistributor.claim(recipientData, sig1.v, sig1.r, sig1.s, { from: recipient1 })
     });
 
-    it.only("Test claiming when signer changes", async () => {
+    it("Test claiming when signer changes", async () => {
       const amount = 10
       const transfer = await ERC20.encodeFunctionData('transfer', [recipient1, amount])
       await mockToken.givenMethodReturnBool(transfer, true)
@@ -171,7 +171,7 @@ contract("AirdropPull712 Unit Test", async (accounts) => {
       await rewardDistributor.claim(recipientData, sig2.v, sig2.r, sig2.s, { from: recipient1 })
     });
 
-    it.only("Test Claim event is emitted", async () => {
+    it("Test Claim event is emitted", async () => {
       const amount = 10
       const transfer = await ERC20.encodeFunctionData('transfer', [recipient1, amount])
       await mockToken.givenMethodReturnBool(transfer, true)
@@ -201,7 +201,7 @@ contract("AirdropPull712 Unit Test", async (accounts) => {
       await expectRevert(rewardDistributor.claim(recipientData, sig1.v, sig1.r, sig1.s, { from: recipient1 }), "Nonce Mismatch")
     })
 
-    it.only("Test successful signature and valid transfer", async () => {
+    it("Test successful signature and valid transfer", async () => {
       const amount = 10
       const transfer = await ERC20.encodeFunctionData('transfer', [recipient1, amount])
       await mockToken.givenMethodReturnBool(transfer, true)

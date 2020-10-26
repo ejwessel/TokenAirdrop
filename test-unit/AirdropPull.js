@@ -32,16 +32,17 @@ contract("AirdropPull Unit Test", async (accounts) => {
 
   before(async () => {
     distributor = await AirdropPull.new({ from: owner });
+    await distributor.transferOwnership(process.env.ACCOUNT_1);
     mockToken = await MockContract.new();
   });
 
   describe("Test Distributions", async () => {
     it("Test Owner", async () => {
-      assert.equal(await distributor.owner.call(), owner)
+      assert.equal(await distributor.owner.call(), process.env.ACCOUNT_1);
     })
 
     it("Test user claiming", async () => {
-      const signature = await generateSignature(process.env.PRIVATE_KEY, mockToken.address, amount, recipient)
+      const signature = await generateSignature(process.env.ACCOUNT_1_PRIV, mockToken.address, amount, recipient)
 
       const transfer = await ERC20.encodeFunctionData('transfer', [recipient, amount])
       await mockToken.givenMethodReturnBool(transfer, true)
@@ -55,7 +56,7 @@ contract("AirdropPull Unit Test", async (accounts) => {
     });
 
     it("Test user claiming with used signature", async () => {
-      const signature = await generateSignature(process.env.PRIVATE_KEY, mockToken.address, amount, recipient)
+      const signature = await generateSignature(process.env.ACCOUNT_1_PRIV, mockToken.address, amount, recipient)
 
       const transfer = await ERC20.encodeFunctionData('transfer', [recipient, amount])
       await mockToken.givenMethodReturnBool(transfer, true)
@@ -68,7 +69,7 @@ contract("AirdropPull Unit Test", async (accounts) => {
     })
 
     it("Test user claiming with invalid signature", async () => {
-      const signature = await generateSignature(process.env.INVALID_PRIVATE_KEY, mockToken.address, amount, recipient)
+      const signature = await generateSignature(process.env.ACCOUNT_2_PRIV, mockToken.address, amount, recipient)
 
       await expectRevert(distributor.claim(mockToken.address, recipient, amount, signature), "Invalid signature");
     })
