@@ -1,5 +1,5 @@
 {
-  "name": "AirdropPush",
+  "name": "Airdrop",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
@@ -17,6 +17,7 @@
     "@openzeppelin/contracts": "^3.2.0",
     "@openzeppelin/contracts-ethereum-package": "^3.0.0",
     "@openzeppelin/test-helpers": "^0.5.6",
+    "commander": "^6.2.0",
     "ganache-cli": "^6.10.2",
     "lodash": "^4.17.20"
   },
@@ -31,6 +32,7 @@
     "deploy:pull:mainnet": "yarn buidler --network mainnet run ./scripts/1_airdrop_pull_deployment.js",
     "deploy:push:mainnet": "yarn buidler --network mainnet run ./scripts/1_airdrop_push_deployment.js",
     "airdrop:push": "yarn builder --network mainnet run ./scripts/2_airdrop_push.js",
-    "ganache": "ganache-cli -d"
+    "ganache": "ganache-cli -d",
+    "sign": "node scripts/generate_signature.js"
   }
 }
