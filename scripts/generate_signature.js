@@ -44,7 +44,7 @@ async function main() {
   program.version("0.0.1");
   program
     .requiredOption("-c, --contract <address>", "Target APY contract")
-    .requiredOption("-n, --nonce <numbrer>", "Current nonce for recipient")
+    .requiredOption("-n, --nonce <number>", "Current nonce for recipient")
     .requiredOption("-r, --recipient <address>", "Recipient to recieve funds")
     .requiredOption(
       "-a, --amount <number>",
