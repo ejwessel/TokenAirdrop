@@ -1,23 +1,24 @@
 require('dotenv').config()
-const { ethers } = require("ethers");
+const { expect } = require("chai");
+const { ethers, waffle, artifacts } = require("hardhat");
+const { BN } = ethers.BigNumber
+const { solidityKeccak256: keccack256, arrayify } = ethers.utils
+const { deployMockContract } = waffle
 const timeMachine = require("ganache-time-traveler");
-const AirdropPull = artifacts.require("AirdropPull");
-const MockContract = artifacts.require("MockContract");
-const ERC20 = new ethers.utils.Interface(artifacts.require("ERC20").abi);
-const { BN, expectEvent, expectRevert } = require("@openzeppelin/test-helpers");
+const IERC20 = artifacts.require("IERC20")
 
-async function generateSignature(key, token, amt, recipient) {
-  const wallet = new ethers.Wallet(key)
-  const hash = ethers.utils.solidityKeccak256(['address', 'address', 'uint256'], [token, recipient, amt])
-  const message = ethers.utils.arrayify(hash)
-  const signature = await wallet.signMessage(message)
+async function generateSignature(signer, token, amt, recipient) {
+  // const wallet = new ethers.Wallet(key)
+  const hash = keccack256(['address', 'address', 'uint256'], [token, recipient, amt])
+  const message = arrayify(hash)
+  const signature = await signer.signMessage(message)
   return signature
 }
 
-contract("AirdropPull Unit Test", async (accounts) => {
-  const [owner, recipient] = accounts;
+describe("AirdropPull Unit Test", () => {
   const amount = "1000"
-
+  let deployer
+  let recipient
   let distributor;
   let mockToken;
 
@@ -31,47 +32,37 @@ contract("AirdropPull Unit Test", async (accounts) => {
   });
 
   before(async () => {
-    distributor = await AirdropPull.new({ from: owner });
-    await distributor.transferOwnership(process.env.ACCOUNT_1);
-    mockToken = await MockContract.new();
+    [deployer, recipient] = await ethers.getSigners();
+    const distributorFactory = await ethers.getContractFactory("AirdropPull")
+    distributor = await distributorFactory.connect(deployer).deploy()
+    await distributor.deployed()
+    mockToken = await deployMockContract(deployer, IERC20.abi)
   });
 
   describe("Test Distributions", async () => {
     it("Test Owner", async () => {
-      assert.equal(await distributor.owner.call(), process.env.ACCOUNT_1);
+      const contractOwner = await distributor.owner()
+      expect(contractOwner).to.equal(deployer.address)
     })
 
     it("Test user claiming", async () => {
-      const signature = await generateSignature(process.env.ACCOUNT_1_PRIV, mockToken.address, amount, recipient)
-
-      const transfer = await ERC20.encodeFunctionData('transfer', [recipient, amount])
-      await mockToken.givenMethodReturnBool(transfer, true)
-
-      const trx = await distributor.claim(mockToken.address, recipient, amount, signature);
-
-      const invocationCount = await mockToken.invocationCountForMethod.call(transfer)
-      assert.equal(invocationCount, 1)
-
-      await expectEvent(trx, 'Claimed', { token: mockToken.address, recipient: recipient, amount: new BN(amount) })
+      const signature = await generateSignature(deployer, mockToken.address, amount, recipient.address)
+      await mockToken.mock.transfer.returns(true)
+      await expect(distributor.connect(recipient).claim(mockToken.address, recipient.address, amount, signature)).to.not.be.reverted
     });
 
     it("Test user claiming with used signature", async () => {
-      const signature = await generateSignature(process.env.ACCOUNT_1_PRIV, mockToken.address, amount, recipient)
-
-      const transfer = await ERC20.encodeFunctionData('transfer', [recipient, amount])
-      await mockToken.givenMethodReturnBool(transfer, true)
-
+      const signature = await generateSignature(deployer, mockToken.address, amount, recipient.address)
+      await mockToken.mock.transfer.returns(true)
       // claim with signature
-      await distributor.claim(mockToken.address, recipient, amount, signature);
-
+      await distributor.connect(recipient).claim(mockToken.address, recipient.address, amount, signature);
       // invalid with signature again
-      await expectRevert(distributor.claim(mockToken.address, recipient, amount, signature), "Invalid signature");
+      await expect(distributor.connect(recipient).claim(mockToken.address, recipient.address, amount, signature)).to.be.revertedWith("Invalid signature");
     })
 
     it("Test user claiming with invalid signature", async () => {
-      const signature = await generateSignature(process.env.ACCOUNT_2_PRIV, mockToken.address, amount, recipient)
-
-      await expectRevert(distributor.claim(mockToken.address, recipient, amount, signature), "Invalid signature");
+      const signature = await generateSignature(recipient, mockToken.address, amount, recipient.address)
+      await expect(distributor.connect(recipient).claim(mockToken.address, recipient.address, amount, signature)).to.be.revertedWith("Invalid signature");
     })
   });
 })
