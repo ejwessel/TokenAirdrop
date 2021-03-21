@@ -44,13 +44,13 @@ describe("AirdropPull Unit Test", () => {
       expect(contractOwner).to.equal(deployer.address)
     })
 
-    it("Test user claiming", async () => {
+    it("Test user claiming passes", async () => {
       const signature = await generateSignature(deployer, mockToken.address, amount, recipient.address)
       await mockToken.mock.transfer.returns(true)
       await expect(distributor.connect(recipient).claim(mockToken.address, recipient.address, amount, signature)).to.emit(distributor, 'Claimed').withArgs(mockToken.address, recipient.address, amount)
     });
 
-    it("Test user claiming with used signature", async () => {
+    it("Test user claiming with used signature fails", async () => {
       const signature = await generateSignature(deployer, mockToken.address, amount, recipient.address)
       await mockToken.mock.transfer.returns(true)
       // claim with signature
@@ -59,7 +59,7 @@ describe("AirdropPull Unit Test", () => {
       await expect(distributor.connect(recipient).claim(mockToken.address, recipient.address, amount, signature)).to.be.revertedWith("Invalid signature");
     })
 
-    it("Test user claiming with invalid signature", async () => {
+    it("Test user claiming with invalid signature fails", async () => {
       const signature = await generateSignature(recipient, mockToken.address, amount, recipient.address)
       await expect(distributor.connect(recipient).claim(mockToken.address, recipient.address, amount, signature)).to.be.revertedWith("Invalid signature");
     })

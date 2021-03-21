@@ -32,7 +32,7 @@ describe("AirdropPush Unit Test", () => {
   });
 
   describe("Test Distributions", async () => {
-    it("Test distribution to users", async () => {
+    it("Test distribution to users passes", async () => {
       // NOTE: generally an approval from the token would need to be made to the distributor
       await mockToken.mock.transferFrom.returns(true)
 

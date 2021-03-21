@@ -87,7 +87,7 @@ describe("AirdropPull712 Unit Test", () => {
       expect(signerAddress).to.equal(deployer.address)
     })
 
-    it("Test Owner is set", async () => {
+    it("Test Owner set", async () => {
       const ownerAddress = await rewardDistributor.owner()
       expect(ownerAddress).to.equal(deployer.address)
     })
@@ -192,7 +192,7 @@ describe("AirdropPull712 Unit Test", () => {
       await expect(rewardDistributor.claim(recipientData, sig1.v, sig1.r, sig1.s)).to.be.revertedWith("Nonce Mismatch")
     })
 
-    it("Test successful signature and valid transfer", async () => {
+    it("Test signature and valid transfer passes", async () => {
       const amount = 10
       await mockToken.mock.transfer.returns(true)
       await mockToken.mock.balanceOf.returns(amount)
