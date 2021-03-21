@@ -47,7 +47,7 @@ describe("AirdropPull Unit Test", () => {
     it("Test user claiming", async () => {
       const signature = await generateSignature(deployer, mockToken.address, amount, recipient.address)
       await mockToken.mock.transfer.returns(true)
-      await expect(distributor.connect(recipient).claim(mockToken.address, recipient.address, amount, signature)).to.not.be.reverted
+      await expect(distributor.connect(recipient).claim(mockToken.address, recipient.address, amount, signature)).to.emit(distributor, 'Claimed').withArgs(mockToken.address, recipient.address, amount)
     });
 
     it("Test user claiming with used signature", async () => {

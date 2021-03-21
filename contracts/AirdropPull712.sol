@@ -11,10 +11,8 @@ contract AirdropPull712 is Ownable {
     using ECDSA for bytes32;
     using SafeERC20 for IERC20;
 
-    mapping(bytes => bool) public _usedSignatures;
-
     event SetSigner(address newSigner);
-    event Claimed(address wallet, uint256 amount);
+    event Claimed(uint256 nonce, address wallet, uint256 amount);
 
     struct EIP712Domain {
         string name;
@@ -24,28 +22,30 @@ contract AirdropPull712 is Ownable {
     }
 
     struct Recipient {
+        uint256 nonce;
         address wallet;
         uint256 amount;
     }
 
-    bytes32 private constant EIP712_DOMAIN_TYPEHASH = keccak256(
-        "EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)"
-    );
+    bytes32 private constant EIP712_DOMAIN_TYPEHASH =
+        keccak256(
+            "EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)"
+        );
 
-    bytes32 private constant RECIPIENT_TYPEHASH = keccak256(
-        "Recipient(address wallet,uint256 amount)"
-    );
+    bytes32 private constant RECIPIENT_TYPEHASH =
+        keccak256("Recipient(uint256 nonce,address wallet,uint256 amount)");
 
     bytes32 private immutable DOMAIN_SEPARATOR;
 
     IERC20 public immutable token;
-    address public signer;
+    mapping(address => uint256) public accountNonces;
+    address public signerAddress;
 
-    constructor(IERC20 _token, address signerAddress) public {
+    constructor(IERC20 _token, address _signerAddress) public {
         require(address(_token) != address(0), "Invalid Token");
-        require(signerAddress != address(0), "Invalid Signer Address");
+        require(_signerAddress != address(0), "Invalid Signer Address");
         token = _token;
-        signer = signerAddress;
+        signerAddress = _signerAddress;
 
         DOMAIN_SEPARATOR = _hashDomain(
             EIP712Domain({
@@ -83,6 +83,7 @@ contract AirdropPull712 is Ownable {
             keccak256(
                 abi.encode(
                     RECIPIENT_TYPEHASH,
+                    recipient.nonce,
                     recipient.wallet,
                     recipient.amount
                 )
@@ -109,8 +110,8 @@ contract AirdropPull712 is Ownable {
         return id;
     }
 
-    function setSigner(address newSigner) external onlyOwner {
-        signer = newSigner;
+    function setSigner(address newSignerAddress) external onlyOwner {
+        signerAddress = newSignerAddress;
     }
 
     function claim(
@@ -120,17 +121,21 @@ contract AirdropPull712 is Ownable {
         bytes32 s
     ) external {
         address signatureSigner = ecrecover(_hash(recipient), v, r, s);
-        require(signatureSigner == signer, "Invalid Signature");
+        require(signatureSigner == signerAddress, "Invalid Signature");
+
+        require(
+            recipient.nonce == accountNonces[recipient.wallet],
+            "Nonce Mismatch"
+        );
 
         require(
             token.balanceOf(address(this)) >= recipient.amount,
             "Insufficient Funds"
         );
 
-        //TODO; need to prevent signature reuse
-
+        accountNonces[recipient.wallet] += 1;
         token.safeTransfer(recipient.wallet, recipient.amount);
 
-        emit Claimed(recipient.wallet, recipient.amount);
+        emit Claimed(recipient.nonce, recipient.wallet, recipient.amount);
     }
 }
