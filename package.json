@@ -13,8 +13,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged",
-      "commit-msg": "./git_hooks/commit-msg"
+      "pre-commit": "lint-staged"
     }
   },
   "lint-staged": {
