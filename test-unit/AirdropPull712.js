@@ -1,4 +1,4 @@
-const { ethers, artifacts, contract } = require("@nomiclabs/buidler");
+const { ethers, artifacts, contract } = require("hardhat");
 const {
   BN,
   constants,

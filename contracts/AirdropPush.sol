@@ -1,21 +1,19 @@
 //SPDX-License-Identifier: Unlicense
-pragma solidity ^0.6.10;
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/SafeERC20.sol";
-import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/ERC20.sol";
+pragma solidity ^0.7.6;
+import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-contract AirdropPush is Ownable {
+contract AirdropPush {
     using SafeERC20 for IERC20;
 
     function distribute(
         IERC20 token,
-        address[] memory users,
+        address[] memory accounts,
         uint256[] memory amounts
-    ) external onlyOwner {
-        require(users.length == amounts.length, "LENGTH_MISMATCH");
-        for (uint256 i = 0; i < users.length; i++) {
-            token.safeTransferFrom(msg.sender, users[i], amounts[i]);
+    ) external {
+        require(accounts.length == amounts.length, "LENGTH_MISMATCH");
+        for (uint256 i = 0; i < accounts.length; i++) {
+            token.safeTransferFrom(msg.sender, accounts[i], amounts[i]);
         }
     }
 }

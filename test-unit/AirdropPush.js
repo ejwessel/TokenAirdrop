@@ -1,20 +1,18 @@
-const { ethers, web3, artifacts, contract } = require("@nomiclabs/buidler");
-const {
-  constants,
-  expectEvent, // Assertions for emitted events
-  expectRevert, // Assertions for transactions that should fail
-} = require("@openzeppelin/test-helpers");
+const { expect } = require("chai");
+const { ethers, waffle, artifacts } = require("hardhat");
+const { deployMockContract } = waffle
+
 const timeMachine = require("ganache-time-traveler");
-const MockContract = artifacts.require("MockContract");
 const IERC20 = artifacts.require("IERC20");
-const AirdropPush = artifacts.require("AirdropPush");
 
-contract("AirdropPush Unit Test", async (accounts) => {
-  const [owner, randomUser1, randomUser2, randomUser3] = accounts;
-
-  let distributor
+describe("AirdropPush Unit Test", () => {
+  let deployer
+  let distributorContract
   let mockToken
   let snapshotId
+  let randomUser1
+  let randomUser2
+  let randomUser3
 
   beforeEach(async () => {
     let snapshot = await timeMachine.takeSnapshot();
@@ -26,40 +24,25 @@ contract("AirdropPush Unit Test", async (accounts) => {
   });
 
   before(async () => {
-    mockToken = await MockContract.new()
-    distributor = await AirdropPush.new()
+    [deployer, randomUser1, randomUser2, randomUser3] = await ethers.getSigners();
+    mockToken = await deployMockContract(deployer, IERC20.abi)
+    const distributorFactory = await ethers.getContractFactory('AirdropPush')
+    distributorContract = await distributorFactory.connect(deployer).deploy()
+    await distributorContract.deployed()
   });
 
   describe("Test Distributions", async () => {
-    it("Test Owner", async () => {
-      assert.equal(await distributor.owner.call(), owner)
-    })
-
-    it("Test distribute only callable by owner", async () => {
-      await expectRevert(
-        distributor.distribute(
-          mockToken.address,
-          [constants.ZERO_ADDRESS],
-          [0],
-          { from: randomUser1 }
-        ),
-        "Ownable: caller is not the owner"
-      )
-    })
-
     it("Test distribution to users", async () => {
-      const TokenInterface = new ethers.utils.Interface(IERC20.abi)
-      const transferFrom = TokenInterface.encodeFunctionData('transferFrom', [constants.ZERO_ADDRESS, constants.ZERO_ADDRESS, 0])
-      await mockToken.givenMethodReturnBool(transferFrom, true)
+      // NOTE: generally an approval from the token would need to be made to the distributor
+      await mockToken.mock.transferFrom.returns(true)
 
-      await distributor.distribute(
+      await expect(distributorContract.connect(deployer).distribute(
         mockToken.address,
-        [randomUser1, randomUser2, randomUser3],
-        [10, 100, 1000],
-        { from: owner }
-      )
-      const count = await mockToken.invocationCountForMethod.call(transferFrom)
-      assert(count, 3)
+        [randomUser1.address, randomUser2.address, randomUser3.address],
+        [10, 100, 1000]
+      )).to.not.be.reverted
+
+      // NOTE: tokens would be transferred after this
     })
   })
 });

@@ -3,36 +3,47 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "clean": "hardhat clean",
+    "compile": "hardhat compile",
+    "test:unit": "hardhat test test-unit/*",
+    "test:integration": "hardhat test test-integration/* --network localhost",
+    "lint": "solhint contracts/**/*.sol contracts/*.sol",
+    "deploy:pull:mainnet": "yarn hardhat --network mainnet run ./scripts/1_airdrop_pull_deployment.js",
+    "deploy:push:mainnet": "yarn hardhat --network mainnet run ./scripts/1_airdrop_push_deployment.js",
+    "airdrop:push": "yarn hardhat --network mainnet run ./scripts/2_airdrop_push.js",
+    "sign": "node scripts/generate_signature.js"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "./git_hooks/commit-msg"
+    }
+  },
+  "lint-staged": {
+    "contracts/**/*.sol": "solhint -w 0",
+    "*.js": "eslint --cache --fix",
+    "*.{js,css,md}": "prettier --write"
+  },
   "devDependencies": {
-    "@gnosis.pm/mock-contract": "^4.0.0",
-    "@nomiclabs/buidler": "^1.4.6",
-    "@nomiclabs/buidler-ethers": "^2.0.0",
-    "@nomiclabs/buidler-truffle5": "^1.3.4",
-    "@nomiclabs/buidler-web3": "^1.3.4",
     "dotenv": "^8.2.0",
-    "ethers": "5.0.18",
+    "ethers": "^5.0.0",
     "ganache-time-traveler": "^1.0.14"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "^3.2.0",
+    "@nomiclabs/hardhat-ethers": "^2.0.2",
+    "@nomiclabs/hardhat-etherscan": "^2.1.1",
+    "@nomiclabs/hardhat-truffle5": "^2.0.0",
+    "@nomiclabs/hardhat-waffle": "^2.0.1",
+    "@nomiclabs/hardhat-web3": "^2.0.0",
+    "@openzeppelin/contracts": "^3.4.0",
     "@openzeppelin/contracts-ethereum-package": "^3.0.0",
     "@openzeppelin/test-helpers": "^0.5.6",
     "commander": "^6.2.0",
+    "ethereum-waffle": "^3.0.0",
     "ganache-cli": "^6.10.2",
-    "lodash": "^4.17.20"
-  },
-  "scripts": {
-    "check": "yarn lint",
-    "clean": "buidler clean",
-    "compile": "buidler compile",
-    "test:unit": "buidler test test-unit/*",
-    "test:integration": "buidler test test-integration/* --network localhost",
-    "lint": "solhint contracts/**/*.sol",
-    "fork:mainnet": "ganache-cli -d -f $(node get_infura.js) --unlock 0x131a9A36Ea25aFB4Ed1a4510eE4B36E369d0F699 --unlock 0x8cee3eeab46774c1CDe4F6368E3ae68BcCd760Bf --unlock 0xBE0eB53F46cd790Cd13851d5EFf43D12404d33E8 --unlock 0xBA9FEc0023e6AA54D96617cDb3E5507FF20F8B81",
-    "deploy:pull:mainnet": "yarn buidler --network mainnet run ./scripts/1_airdrop_pull_deployment.js",
-    "deploy:push:mainnet": "yarn buidler --network mainnet run ./scripts/1_airdrop_push_deployment.js",
-    "airdrop:push": "yarn builder --network mainnet run ./scripts/2_airdrop_push.js",
-    "ganache": "ganache-cli -d",
-    "sign": "node scripts/generate_signature.js"
+    "hardhat": "^2.1.1",
+    "lodash": "^4.17.20",
+    "web3": "^1.3.4"
   }
 }
