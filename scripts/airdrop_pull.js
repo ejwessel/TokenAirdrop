@@ -1,6 +1,7 @@
 require('dotenv').config()
-const { ethers } = require("@nomiclabs/buidler");
-const { BN, constants } = require("@openzeppelin/test-helpers");
+const { ethers, artifacts } = require("hardhat");
+const BN = ethers.BigNumber
+const ERC20 = artifacts.require("ERC20");
 var _ = require('lodash')
 
 async function generateSignature(key, token, amt, recipient) {
@@ -12,19 +13,18 @@ async function generateSignature(key, token, amt, recipient) {
 }
 
 function amount(decimals, value) {
-  return ((new BN("10").pow(new BN(decimals))).mul(new BN(value))).toString()
+  return ((BN.from("10").pow(BN.from(decimals))).mul(BN.from(value))).toString()
 }
 
 async function main() {
-  const ERC20 = await ethers.getContractFactory("ERC20")
-  const FWB = await ERC20.attach("0x7d91e637589EC3Bb54D8213a9e92Dc6E8D12da91")
+  const FWB = await ethers.getContractAt(ERC20.abi, '0x7d91e637589EC3Bb54D8213a9e92Dc6E8D12da91')
   const decimals = await FWB.decimals()
 
   const AirdropPull = await ethers.getContractFactory("AirdropPull");
   const distributor = await AirdropPull.deploy();
+  await distributor.deployed();
 
   // deploy the distributor
-  await distributor.deployed();
   console.log(`FWB Address: ${FWB.address}`)
   console.log(`Distributor Address: ${distributor.address}`)
 
@@ -40,7 +40,7 @@ async function main() {
   }
 
   for (const [key, value] of Object.entries(user_and_amounts)) {
-    value.signature = await generateSignature(process.env.PRIVATE_KEY, FWB.address, value.amount, key)
+    value.signature = await generateSignature(process.env.SIGNER, FWB.address, value.amount, key)
   }
 
   console.log(user_and_amounts)

@@ -1,5 +1,5 @@
-const { ethers } = require("hardhat");
-const { BN } = ethers.BigNumber
+const { ethers, artifacts } = require("hardhat");
+const BN = ethers.BigNumber
 const { MaxUint256 } = ethers.constants
 const ERC20 = artifacts.require("ERC20");
 var _ = require('lodash')
