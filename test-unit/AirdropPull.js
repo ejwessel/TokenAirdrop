@@ -1,7 +1,6 @@
 require('dotenv').config()
 const { expect } = require("chai");
 const { ethers, waffle, artifacts } = require("hardhat");
-const { BN } = ethers.BigNumber
 const { solidityKeccak256: keccack256, arrayify } = ethers.utils
 const { deployMockContract } = waffle
 const timeMachine = require("ganache-time-traveler");
