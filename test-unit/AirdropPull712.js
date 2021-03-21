@@ -5,7 +5,6 @@ const { deployMockContract } = waffle
 const { AddressZero } = ethers.constants
 const timeMachine = require("ganache-time-traveler");
 const IERC20 = artifacts.require("IERC20")
-const ROTATED_SIGNER = process.env.ACCOUNT_2
 const DEV_CHAIN_ID = 31337
 
 async function generateSignature(signer, contract, nonce, recipient, amount, chain = DEV_CHAIN_ID) {
