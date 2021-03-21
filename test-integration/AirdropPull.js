@@ -1,6 +1,7 @@
 require('dotenv').config()
 const { expect } = require("chai");
 const { ethers, artifacts } = require("hardhat");
+const timeMachine = require("ganache-time-traveler");
 const BN = ethers.BigNumber
 const ERC20 = artifacts.require("ERC20");
 
@@ -60,6 +61,15 @@ describe("AirdropPull Integration Test", () => {
   let user2Sig
   let user3Sig
   let user4Sig
+
+  beforeEach(async () => {
+    let snapshot = await timeMachine.takeSnapshot();
+    snapshotId = snapshot["result"];
+  });
+
+  afterEach(async () => {
+    await timeMachine.revertToSnapshot(snapshotId);
+  });
 
   before(async () => {
     [deployer, randomUser1, randomUser2, randomUser3, randomUser4] = await ethers.getSigners();
