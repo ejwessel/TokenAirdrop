@@ -9,9 +9,6 @@
     "test:unit": "hardhat test test-unit/*",
     "test:integration": "hardhat test test-integration/*",
     "lint": "solhint contracts/**/*.sol contracts/*.sol",
-    "deploy:pull:mainnet": "yarn hardhat --network mainnet run ./scripts/1_airdrop_pull_deployment.js",
-    "deploy:push:mainnet": "yarn hardhat --network mainnet run ./scripts/1_airdrop_push_deployment.js",
-    "airdrop:push": "yarn hardhat --network mainnet run ./scripts/2_airdrop_push.js",
     "sign": "node scripts/generate_signature.js"
   },
   "husky": {
