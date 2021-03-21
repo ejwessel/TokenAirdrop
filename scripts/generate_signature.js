@@ -1,6 +1,6 @@
 require("dotenv").config();
 const { program } = require("commander");
-const { ethers } = require("@nomiclabs/buidler");
+const { ethers } = require("hardhat");
 
 async function generateSignature(
   key,
