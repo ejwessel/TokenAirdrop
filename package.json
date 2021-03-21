@@ -7,7 +7,7 @@
     "clean": "hardhat clean",
     "compile": "hardhat compile",
     "test:unit": "hardhat test test-unit/*",
-    "test:integration": "hardhat test test-integration/* --network localhost",
+    "test:integration": "hardhat test test-integration/*",
     "lint": "solhint contracts/**/*.sol contracts/*.sol",
     "deploy:pull:mainnet": "yarn hardhat --network mainnet run ./scripts/1_airdrop_pull_deployment.js",
     "deploy:push:mainnet": "yarn hardhat --network mainnet run ./scripts/1_airdrop_push_deployment.js",
