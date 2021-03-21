@@ -1,7 +1,7 @@
-const { expect } = require("chai");
-const { ethers, artifacts, waffle } = require("hardhat");
-const { deployMockContract } = waffle;
-const { AddressZero } = ethers.constants;
+const {expect} = require("chai");
+const {ethers, artifacts, waffle} = require("hardhat");
+const {deployMockContract} = waffle;
+const {AddressZero} = ethers.constants;
 const timeMachine = require("ganache-time-traveler");
 const IERC20 = artifacts.require("IERC20");
 const DEV_CHAIN_ID = 31337;
@@ -22,9 +22,9 @@ async function generateSignature(
   };
   const types = {
     Recipient: [
-      { name: "nonce", type: "uint256" },
-      { name: "wallet", type: "address" },
-      { name: "amount", type: "uint256" },
+      {name: "nonce", type: "uint256"},
+      {name: "wallet", type: "address"},
+      {name: "amount", type: "uint256"},
     ],
   };
   const data = {
@@ -41,7 +41,7 @@ async function generateSignature(
   const r = "0x" + signature.substring(0, 64);
   const s = "0x" + signature.substring(64, 128);
   const v = parseInt(signature.substring(128, 130), 16);
-  return { r, s, v };
+  return {r, s, v};
 }
 
 describe("AirdropPull712 Unit Test", () => {
@@ -133,7 +133,7 @@ describe("AirdropPull712 Unit Test", () => {
 
   describe("Test Claiming", async () => {
     it("Test Signature mismatch fails", async () => {
-      const { r, s, v } = await generateSignature(
+      const {r, s, v} = await generateSignature(
         deployer,
         rewardDistributor.address,
         0,
@@ -320,7 +320,9 @@ describe("AirdropPull712 Unit Test", () => {
       );
       let recipientData = [0, recipient1.address, amount];
       await expect(
-        rewardDistributor.connect(recipient1).claim(recipientData, sig1.v, sig1.r, sig1.s)
+        rewardDistributor
+          .connect(recipient1)
+          .claim(recipientData, sig1.v, sig1.r, sig1.s)
       ).to.not.be.reverted;
     });
   });
