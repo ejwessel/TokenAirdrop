@@ -1,19 +1,23 @@
-const { ethers } = require("@nomiclabs/buidler");
-const { BN } = require("@openzeppelin/test-helpers");
+const { ethers } = require("hardhat");
+const { BN } = ethers.BigNumber
+const ERC20 = artifacts.require("ERC20");
 var _ = require('lodash')
 
 // method is used to account for the decimal placement that token has
 function amount(decimals, value) {
-  return ((new BN("10").pow(new BN(decimals))).mul(new BN(value))).toString()
+  return ((BN.from("10").pow(BN.from(decimals))).mul(BN.from(value))).toString()
 }
 
 async function main() {
-  const ERC20 = await ethers.getContractFactory("ERC20")
-  const FWB = await ERC20.attach("0x7d91e637589EC3Bb54D8213a9e92Dc6E8D12da91")
+
+  const [deployer] = await ethers.getSigners()
+
+  const FWB = await ethers.getContractAt(ERC20.abi, '0x7d91e637589EC3Bb54D8213a9e92Dc6E8D12da91')
   const decimals = await FWB.decimals()
 
-  const AirdropPush = await ethers.getContractFactory("AirdropPush");
-  const distributor = await AirdropPush.attach("0x6f699197E5CBB6CE618EC80A5C3B832fb7551BD6");
+  const AirdropPushFactory = await ethers.getContractFactory("AirdropPush");
+  const distributor = await AirdropPushFactory.connect(deployer).deploy();
+  await distributor.deployed();
 
   const userAmounts = [
     ['0xBA9FEc0023e6AA54D96617cDb3E5507FF20F8B81', amount(decimals, 1)],
@@ -24,7 +28,7 @@ async function main() {
 
   const users = split[0]
   const amounts = split[1]
-  await distributor.distributes(
+  await distributor.connect(deployer).distribute(
     FWB.address,
     users,
     amounts
