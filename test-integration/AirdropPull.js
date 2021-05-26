@@ -5,7 +5,7 @@ const timeMachine = require("ganache-time-traveler");
 const BN = ethers.BigNumber;
 const ERC20 = artifacts.require("ERC20");
 
-const DAI_WHALE = "0x13aec50f5d3c011cd3fed44e2a30c515bd8a5a06";
+const DAI_WHALE = "0x16463c0fdB6BA9618909F5b120ea1581618C1b9E";
 const USDC_WHALE = "0x55fe002aeff02f77364de339a1292923a15844b8";
 const USDT_WHALE = "0x5754284f345afc66a98fbb0a0afe71e0f007b949";
 const FWB_WHALE = "0x6b9a9c31214fbcb2265e2a6331e5b8487217503f";
