@@ -57,11 +57,7 @@ contract AirdropPull712 is Ownable {
         );
     }
 
-    function _hashDomain(EIP712Domain memory eip712Domain)
-        private
-        pure
-        returns (bytes32)
-    {
+    function _hashDomain(EIP712Domain memory eip712Domain) private pure returns (bytes32) {
         return
             keccak256(
                 abi.encode(
@@ -74,31 +70,15 @@ contract AirdropPull712 is Ownable {
             );
     }
 
-    function _hashRecipient(Recipient memory recipient)
-        private
-        pure
-        returns (bytes32)
-    {
+    function _hashRecipient(Recipient memory recipient) private pure returns (bytes32) {
         return
             keccak256(
-                abi.encode(
-                    RECIPIENT_TYPEHASH,
-                    recipient.nonce,
-                    recipient.wallet,
-                    recipient.amount
-                )
+                abi.encode(RECIPIENT_TYPEHASH, recipient.nonce, recipient.wallet, recipient.amount)
             );
     }
 
     function _hash(Recipient memory recipient) private view returns (bytes32) {
-        return
-            keccak256(
-                abi.encodePacked(
-                    "\x19\x01",
-                    DOMAIN_SEPARATOR,
-                    _hashRecipient(recipient)
-                )
-            );
+        return keccak256(abi.encodePacked("\x19\x01", DOMAIN_SEPARATOR, _hashRecipient(recipient)));
     }
 
     function _getChainID() private pure returns (uint256) {
@@ -120,18 +100,12 @@ contract AirdropPull712 is Ownable {
         bytes32 r,
         bytes32 s
     ) external {
-        address signatureSigner = ecrecover(_hash(recipient), v, r, s);
+        address signatureSigner = _hash(recipient).recover(v, r, s);
         require(signatureSigner == signerAddress, "Invalid Signature");
 
-        require(
-            recipient.nonce == accountNonces[recipient.wallet],
-            "Nonce Mismatch"
-        );
+        require(recipient.nonce == accountNonces[recipient.wallet], "Nonce Mismatch");
 
-        require(
-            token.balanceOf(address(this)) >= recipient.amount,
-            "Insufficient Funds"
-        );
+        require(token.balanceOf(address(this)) >= recipient.amount, "Insufficient Funds");
 
         accountNonces[recipient.wallet] += 1;
         token.safeTransfer(recipient.wallet, recipient.amount);
